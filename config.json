@@ -1,0 +1,4 @@
+{
+    "wsus_tolerance_days": 7,
+    "eset_tolerance_days": 5
+}
