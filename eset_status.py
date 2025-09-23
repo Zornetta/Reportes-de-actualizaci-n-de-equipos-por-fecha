@@ -20,12 +20,22 @@ class ESETStatusChecker:
 
     def leer_csv(self, file_path):
         with open(file_path, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
+            # Leer la primera línea para detectar el delimitador
+            first_line = file.readline()
+            delimiter = ','
+            if ';' in first_line and first_line.count(';') > first_line.count(','):
+                delimiter = ';'
+            file.seek(0)
+            reader = csv.DictReader(file, delimiter=delimiter)
             for row in reader:
-                self.datos.append({
-                    'Nombre': row['Nombre'],
-                    'Última conexión': row['Última conexión']
-                })
+                try:
+                    self.datos.append({
+                        'Nombre': row['Nombre'],
+                        'Última conexión': row['Última conexión']
+                    })
+                except KeyError as e:
+                    print(f"Error: columna faltante {e} en archivo {file_path}. Encabezado detectado: {list(row.keys())}")
+
 
     def procesar_datos(self):
         hoy = datetime.now()
